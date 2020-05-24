@@ -1,12 +1,29 @@
 //
 //  main.swift
-//  read-darkmode
+//  librias
 //
 //  Created by Filippo Tortomasi on 2020-05-23.
 //  Copyright © 2020 Filippo Tortomasi. All rights reserved.
 //
 
-import Foundation
+import Cocoa
 
-print("Hello, World!")
+func readDarkmode() -> String {
+    if #available(OSX 10.15, *) {
+        let appearanceDescription = NSApplication.shared.effectiveAppearance.debugDescription.lowercased()
+       
+        if appearanceDescription.contains("dark") {
+            return "dark";
+        }
+    } else if #available(OSX 10.14, *) {
+        if let appleInterfaceStyle = UserDefaults.standard.object(forKey: "AppleInterfaceStyle") as? String {
+            
+            if appleInterfaceStyle.lowercased().contains("dark") {
+                return "dark"
+            }
+        }
+    }
+    return "light";
+}
 
+print(readDarkmode())
