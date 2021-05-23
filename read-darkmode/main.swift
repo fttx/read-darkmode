@@ -9,20 +9,23 @@
 import Cocoa
 
 func readDarkmode() -> String {
-    /*
-     #available doesn't allow to check the Major version, it must be hard-coded.
-     Problem: if the OS is updated to a new major version, eg. 13, this function will always return "light".
-     
-     10.14 = Mojave, 10.15 = Catalina, 11.0 = Big Sur (M1), 12.0 = ?? Future compatibility */
-    if #available(OSX 10.15, *), #available(OSX 11.0, *), #available(OSX 12.0, *) {
+    
+    // 10.14 = Mojave, 10.15 = Catalina, 10.16 = Big Sur (named 11.x)
+    if #available(OSX 10.16, *) {
+        _ = NSApplication.shared.effectiveAppearance.debugDescription.lowercased()
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        let appearanceName = item.button?.effectiveAppearance.name
+        if let name = appearanceName?.rawValue.lowercased(),name.contains("dark") {
+            return "dark";
+        }
+    }
+    else if #available(OSX 10.15, *) {
         let appearanceDescription = NSApplication.shared.effectiveAppearance.debugDescription.lowercased()
-       
         if appearanceDescription.contains("dark") {
             return "dark";
         }
     } else if #available(OSX 10.14, *) {
         if let appleInterfaceStyle = UserDefaults.standard.object(forKey: "AppleInterfaceStyle") as? String {
-            
             if appleInterfaceStyle.lowercased().contains("dark") {
                 return "dark"
             }
